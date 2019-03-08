@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/home"
-          android:title="Home"
+    <item android:title="Home"
+          android:id="@+id/home"
           app:showAsAction="always"
           android:icon="@drawable/home_24dp">
-    <menu>
-    <item android:id="@+id/settings"
-          android:title="Settings"
-          app:showAsAction="never"
-          android:icon="@drawable/ic_settings_black_24dp"/>
-    <item android:id="@+id/help"
-          android:title="Help"
-          app:showAsAction="never"
-          android:icon="@drawable/ic_help_black_24dp"/>
-    <item android:id="@+id/exit"
-          android:title="Exit"
-          app:showAsAction="never"
-          android:icon="@drawable/ic_exit_to_app_black_24dp"/>
-    </menu>
+        <menu>
+            <item android:title="Settings"
+                  android:id="@+id/setting"
+                  app:showAsAction="withText"
+                  android:icon="@drawable/ic_settings_black_24dp"/>
+
+            <item android:title="Help"
+                  android:id="@+id/help"
+                  app:showAsAction="withText"
+                  android:icon="@drawable/ic_help_black_24dp"/>
+
+            <item android:title="Exit"
+                  android:id="@+id/exit"
+                  app:showAsAction="withText"
+                  android:icon="@drawable/ic_exit_to_app_black_24dp"/>
+        </menu>
     </item>
 </menu>

@@ -1,5 +1,7 @@
 package com.example.kanwal_laptop.layoutlecture04
 
+import android.app.Activity
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ContextMenu
@@ -13,55 +15,46 @@ import kotlinx.android.synthetic.main.activity_main2.*
 
 
 class Main2Activity : AppCompatActivity() {
-    private lateinit var UserNameET: EditText
-    private lateinit var UserPwdET: EditText
-    private lateinit var noneRadioButton: RadioButton
-    private lateinit var imageViewCharacter: ImageView
-
-    private lateinit var donRadioButton: RadioButton
-    private lateinit var leoRadioButton: RadioButton
-    private lateinit var mikeRadioButton: RadioButton
-    private lateinit var raphRadioButton: RadioButton
-
+    private val REQ_CODE : Int = 1234
+    private var adapter: ArrayAdapter<String>? = null
     private var rankArrayToList: MutableList<String>? = null
-    private var spinnerAdapter: ArrayAdapter<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
+        none_rb.isChecked = true
+        display_tmnt_character.visibility = View.GONE
 
-        noneRadioButton = findViewById(R.id.none_rb)
-        noneRadioButton.isChecked = true
-
-        imageViewCharacter = findViewById(R.id.display_tmnt_character)
-        imageViewCharacter.visibility = View.GONE
-
+        //set the rating bar
         rate_tmnt.setOnRatingBarChangeListener { _, rating, _ ->
             rate_tmnt.rating = rating
         }
 
-        //convert string array data into mutable list
-        rankArrayToList = resources.getStringArray(R.array.Rank).toMutableList()
+        //convert string-array in string.xml file to mutable list
+        rankArrayToList = resources.getStringArray(R.array.tmnt_rank).toMutableList()
 
-        //use array adapter to set spinner adapter
-        spinnerAdapter = ArrayAdapter(
+        //set array adapter of spinner with build-in style
+        adapter = ArrayAdapter(
             this, android.R.layout.simple_spinner_dropdown_item,
             rankArrayToList
         )
+        //attach array adapter to spinner
+        spinner.adapter = adapter
 
-        //attach adapter to spinner
-        rank_spinner.adapter = spinnerAdapter
-        //introduce anonymous inner class with two methods to use spinner onItemSelected
-        rank_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        //make anonymous class for spinner
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                var itemSelected: String = ""
-                itemSelected = parent?.getItemAtPosition(position).toString()
-                if(parent?.selectedItemPosition!=0) {
-                    Toast.makeText(parent?.context, "Item is : $itemSelected", Toast.LENGTH_SHORT).show()
+                var item = parent?.getItemAtPosition(position).toString()
+                if (parent?.selectedItem != 0) {
+                    Toast.makeText(
+                        parent?.context,
+                        "item is $item",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
@@ -69,54 +62,57 @@ class Main2Activity : AppCompatActivity() {
     }
 
     fun submitButtonClicked(view: View) {
-        UserNameET = findViewById(R.id.UserName)
-        UserPwdET = findViewById(R.id.UserPwd)
-
-        if (UserPwdET.text.toString().trim().isEmpty() ||
-            UserNameET.text.toString().trim().isEmpty()
+        if (UserName.text.toString().trim().isEmpty() ||
+            UserPwd.text.toString().trim().isEmpty()
         ) {
-
             Toast.makeText(
                 this@Main2Activity,
                 "Enter User name and password",
                 Toast.LENGTH_SHORT
             ).show()
         } else {
-            Toast.makeText(
-                this@Main2Activity,
-                "User name: ${UserNameET.text}" +
-                        "Password: ${UserPwdET.text}" +
-                        "Rating: ${rate_tmnt.rating}",
-                Toast.LENGTH_SHORT
-            ).show()
+//            Toast.makeText(
+//                this@Main2Activity,
+//                "User name: ${UserName.text}" +
+//                        "Password: ${UserPwd.text}" +
+//                        "Rating: ${rate_tmnt.rating}",
+//                Toast.LENGTH_SHORT
+//            ).show()
+
+            //forward user name to next activity
+
+            intent = Intent(this, GraphActivity :: class.java)
+            intent.putExtra("User" , UserName.text.toString())
+            startActivityForResult(intent, REQ_CODE )
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode.equals(REQ_CODE) && resultCode.equals(Activity.RESULT_OK)){
+            val fetchedKey = data?.extras?.getInt("key")
+            randomKey.text = "$fetchedKey"
         }
     }
 
 
     fun tmntSelectionFunction(view: View) {
-        donRadioButton = findViewById(R.id.don_rb)
-        leoRadioButton = findViewById(R.id.leo_rb)
-        mikeRadioButton = findViewById(R.id.mike_rb)
-        raphRadioButton = findViewById(R.id.raph_rb)
-
-
-        if (donRadioButton.isChecked || leoRadioButton.isChecked || mikeRadioButton.isChecked
-            || raphRadioButton.isChecked
-        ) {
-            imageViewCharacter.visibility = View.VISIBLE
+        if (don_rb.isChecked || leo_rb.isChecked || mike_rb.isChecked || raph_rb.isChecked) {
+            display_tmnt_character.visibility = View.VISIBLE
         }
-
+        //select radio button and change the images of characters
         when (view) {
-            donRadioButton ->
-                imageViewCharacter.setImageResource(R.drawable.tmntdon)
-            leoRadioButton ->
-                imageViewCharacter.setImageResource(R.drawable.tmntleo)
-            mikeRadioButton ->
-                imageViewCharacter.setImageResource(R.drawable.tmntmike)
-            raphRadioButton ->
-                imageViewCharacter.setImageResource(R.drawable.tmntraph)
-            noneRadioButton ->
-                imageViewCharacter.visibility = View.GONE
+            don_rb ->
+                display_tmnt_character.setImageResource(R.drawable.tmntdon)
+            leo_rb ->
+                display_tmnt_character.setImageResource(R.drawable.tmntleo)
+            mike_rb ->
+                display_tmnt_character.setImageResource(R.drawable.tmntmike)
+            raph_rb ->
+                display_tmnt_character.setImageResource(R.drawable.tmntraph)
+            none_rb ->
+                display_tmnt_character.visibility = View.GONE
         }
     }
 
@@ -126,20 +122,22 @@ class Main2Activity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        var selectedItem: String = ""
+        var selectedItem = ""
         when (item?.itemId) {
             R.id.home -> selectedItem = "Home"
-            R.id.settings -> selectedItem = "Settings"
+            R.id.setting -> {
+                selectedItem = "Settings"
+                intent = Intent(this, MainActivity ::class.java)
+                startActivity(intent)
+            }
             R.id.help -> selectedItem = "Help"
             R.id.exit -> exitProcess(0)
         }
-
         Toast.makeText(
-            this,
-            "The menu option is $selectedItem", Toast.LENGTH_SHORT
+            this, "You selected $selectedItem",
+            Toast.LENGTH_SHORT
         ).show()
         return super.onOptionsItemSelected(item)
     }
-
 
 }

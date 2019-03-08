@@ -2,11 +2,12 @@
     <string name="app_name">LayoutLecture04</string>
     <string name="app_activity_name">Random Number Generator</string>
 
-    <string-array name="Rank">
-        <item> Choose Rank </item>
-        <item> Captain </item>
-        <item> Major </item>
-        <item> Colonel </item>
-    </string-array>
 
+    <string-array name="tmnt_rank">
+        <item>Choose Rank</item>
+        <item>Captain</item>
+        <item>Major</item>
+        <item>Colonel</item>
+        <item>Brig</item>
+    </string-array>
 </resources>
